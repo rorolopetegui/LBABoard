@@ -1,6 +1,6 @@
-import Board from './board'
-import Quarter from './quarter'
-import Team from './team'
-import TimePosition from './timePosition'
+import Board from './Board'
+import Quarter from './Quarter'
+import Team from './Team'
+import TimePosition from './TimePosition'
 
 export { Board, Quarter, Team, TimePosition }
