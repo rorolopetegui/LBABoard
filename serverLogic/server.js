@@ -13,29 +13,42 @@ const io = new Server(server, {
 app.use(cors())
 
 io.on('connection', socket => {
+  console.log('Got connection')
   socket.on('addScoreLocal', points => {
     console.log('addScoreToLocal', points)
-    socket.emit('addScoreToLocal', points)
+    io.emit('addScoreToLocal', points)
   })
   socket.on('addScoreVisitor', points => {
     console.log('addScoreToVisitor', points)
-    socket.emit('addScoreToVisitor', points)
+    io.emit('addScoreToVisitor', points)
   })
-  socket.on('pauseTime', () => {
-    console.log('pauseTime')
-    socket.emit('pauseBoard')
+  socket.on('actionPosition', () => {
+    console.log('actionPosition')
+    io.emit('actionPositionCloak')
   })
-  socket.on('pausePosition', () => {
-    console.log('pausePosition')
-    socket.emit('pausePositionCloak')
+  socket.on('actionTime', () => {
+    console.log('actionTime')
+    io.emit('actionBoard')
   })
-  socket.on('continueTime', () => {
-    console.log('continueTime')
-    socket.emit('continueBoard')
+  socket.on('addPersonalLocal', points => {
+    console.log('addPersonalLocal')
+    io.emit('addPersonalToLocal', points)
   })
-  socket.on('continuePosition', () => {
-    console.log('continuePosition')
-    socket.emit('continuePositionCloak')
+  socket.on('addPersonalVisitor', points => {
+    console.log('addPersonalVisitor')
+    io.emit('addPersonalToVisitor', points)
+  })
+  socket.on('advanceQuarter', () => {
+    console.log('advanceQuarter')
+    io.emit('advanceQuarterBoard')
+  })
+  socket.on('setPositionTime', time => {
+    console.log('setPositionTime')
+    io.emit('setTimePosition', time)
+  })
+  socket.on('setTeams', teams => {
+    console.log('setTeams', teams)
+    io.emit('setMatch', teams)
   })
 })
 

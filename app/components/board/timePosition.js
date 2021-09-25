@@ -26,18 +26,37 @@ const TimePosition = props => {
       if (seconds >= 0) countDown()
     }, 1000)
 
-  socket.on('pauseBoard', () => {
-    clearInterval(myInterval)
+  socket.on('actionBoard', () => {
+    if (myInterval) {
+      clearInterval(myInterval)
+      myInterval = null
+    } else {
+      myInterval = startCountDown()
+    }
   })
-  socket.on('continueBoard', () => {
+
+  socket.on('actionPositionCloak', () => {
+    if (myInterval) {
+      clearInterval(myInterval)
+      myInterval = null
+    } else {
+      myInterval = startCountDown()
+    }
+  })
+
+  socket.on('setTimePosition', time => {
+    seconds = time
+    clearInterval(myInterval)
     myInterval = startCountDown()
   })
 
-  socket.on('pausePositionCloak', () => {
+  socket.on('advanceQuarterBoard', () => {
     clearInterval(myInterval)
-  })
-  socket.on('continuePositionCloak', () => {
-    myInterval = startCountDown()
+    myInterval = null
+    seconds = 24
+    timer.current.innerText = `:${
+      `${seconds}`.length > 1 ? seconds : `0${seconds}`
+    }`
   })
 
   useEffect(() => {
