@@ -11,38 +11,15 @@ const io = new Server(server, {
   },
 })
 app.use(cors())
-app.get('/', (req, res) => {
-  res.json(matchState)
-})
-
-const matchState = {
-  scoreLocal: 0,
-  scoreVisitor: 0,
-  positionCloak: 24,
-  match: 10,
-}
-
-const resetMatchState = () => {
-  matchState.scoreLocal = 0
-  matchState.scoreVisitor = 0
-  matchState.positionCloak = 24
-  matchState.match = 10
-}
 
 io.on('connection', socket => {
-  socket.on('initialize', () => {
-    console.log('initialize')
-    resetMatchState()
-  })
   socket.on('addScoreLocal', points => {
-    console.log('addScoreLocal', points)
-    matchState.scoreLocal += points
-    socket.emit('updateBoard', matchState)
+    console.log('addScoreToLocal', points)
+    socket.emit('addScoreToLocal', points)
   })
   socket.on('addScoreVisitor', points => {
-    console.log('addScoreVisitor', points)
-    matchState.scoreVisitor += points
-    socket.emit('updateBoard', matchState)
+    console.log('addScoreToVisitor', points)
+    socket.emit('addScoreToVisitor', points)
   })
   socket.on('pauseTime', () => {
     console.log('pauseTime')

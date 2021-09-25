@@ -1,6 +1,6 @@
-import * as React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { styled, Paper, Grid, Typography } from '@mui/material'
-import Team from './Team'
+import TimePosition from './TimePosition'
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -15,28 +15,45 @@ const Score = styled(Paper)(() => ({
   border: 'none',
 }))
 
-const ImgLogo = ({ img }) => (
-  <img
-    src={img}
-    alt="logo"
-    style={{
-      margin: 0,
-      position: 'absolute',
-      left: '50%',
-      top: '50%',
-      transform: 'translate(-50%, -50%)',
-      width: '5rem',
-    }}
-  />
-)
-
 const Quarter = props => {
+  const timer = useRef(null)
+  const { socket } = props
+  let time = props.matchTime * 60
+  let minutes = Math.floor(time / 60)
+  let seconds = time % 60
+  let myInterval = null
+  const countDown = () => {
+    minutes = Math.floor(time / 60)
+    seconds = time % 60
+
+    timer.current.innerText = `${
+      `${minutes}`.length > 1 ? minutes : `0${minutes}`
+    }:${`${seconds}`.length > 1 ? seconds : `0${seconds}`}`
+
+    time -= 1
+  }
+  const startCountDown = () =>
+    setInterval(() => {
+      if (time >= 0) countDown()
+    }, 1000)
+  socket.on('pauseBoard', () => {
+    clearInterval(myInterval)
+  })
+  socket.on('continueBoard', () => {
+    myInterval = startCountDown()
+  })
+
+  useEffect(() => {
+    timer.current.innerText = `${
+      `${minutes}`.length > 1 ? minutes : `0${minutes}`
+    }:${`${seconds}`.length > 1 ? seconds : `0${seconds}`}`
+  })
   return (
     <Score variant="outlined" square>
       <Grid container>
         <Grid item xs={3} style={{ position: 'relative' }}>
           <Item variant="outlined" square>
-            <Typography variant="h6">4th</Typography>
+            <Typography variant="h6">{props.quarter}</Typography>
           </Item>
         </Grid>
         <Grid item xs={7}>
@@ -48,21 +65,10 @@ const Quarter = props => {
               borderRight: '0.05rem solid grey',
             }}
           >
-            <Typography variant="h6">03:00</Typography>
+            <Typography variant="h6" ref={timer} />
           </Item>
         </Grid>
-        <Grid item xs={2}>
-          <Item variant="outlined" square>
-            <Typography
-              variant="h6"
-              style={{
-                background: 'radial-gradient(#7f0000 0%, transparent 80%)',
-              }}
-            >
-              :24
-            </Typography>
-          </Item>
-        </Grid>
+        <TimePosition socket={socket} time={props.positionCloak} />
       </Grid>
     </Score>
   )

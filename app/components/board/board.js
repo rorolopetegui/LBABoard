@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-import { Box } from '@mui/material'
+import React, { useState } from 'react'
+import { Box, Button } from '@mui/material'
 import Team from './Team'
 import Quarter from './Quarter'
 import logo1 from '../../images/dynamo.png'
@@ -14,21 +14,37 @@ const loadTeams = () =>
       logo: logo1,
       name: 'Dynamo BBC',
       color: '#221e1f',
+      isLocal: true,
     },
     {
       id: 1,
       logo: logo2,
       name: 'Panteras BBC',
       color: '#0d1232',
+      isLocal: false,
     },
   ]
 
+const matchInitialState = {
+  scoreLocal: 0,
+  scoreVisitor: 0,
+  positionCloak: 24,
+  match: 10,
+  quarter: '1st',
+}
+
 const Board = () => {
-  let socket
-  useEffect(() => {
-    socket = io('http://localhost:5000/')
-    socket.emit('initialize')
-  })
+  const [boardState, setBoardState] = useState(matchInitialState)
+
+  const socket = io('http://localhost:5000/')
+
+  const startTimers = () => {
+    socket.emit('continueTime')
+  }
+  const stopTimers = () => {
+    socket.emit('pauseTime')
+  }
+
   return (
     <Box
       sx={{
@@ -39,9 +55,25 @@ const Board = () => {
       }}
     >
       {loadTeams().map(team => (
-        <Team key={team.id} team={team} />
+        <Team
+          key={team.id}
+          team={team}
+          isLocal={team.isLocal}
+          socket={socket}
+        />
       ))}
-      <Quarter />
+      <Quarter
+        matchTime={boardState.match}
+        positionCloak={boardState.positionCloak}
+        quarter={boardState.quarter}
+        socket={socket}
+      />
+      <Button onClick={() => startTimers()} variant="text">
+        Start
+      </Button>
+      <Button onClick={() => stopTimers()} variant="text">
+        Stop
+      </Button>
     </Box>
   )
 }

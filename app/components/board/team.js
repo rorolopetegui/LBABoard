@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { styled, Paper, Grid, Typography } from '@mui/material'
 
 const TeamPaper = styled(Paper)(() => ({
@@ -39,7 +39,28 @@ const ImgLogo = ({ img }) => (
 )
 
 const Team = props => {
-  const { team } = props
+  const score = useRef(null)
+  const { team, isLocal, socket } = props
+  let currentScore = 0
+  if (isLocal) {
+    socket.on('addScoreToLocal', points => {
+      currentScore += points
+      score.current.innerText =
+        `${currentScore}`.length > 1 ? currentScore : `0${currentScore}`
+    })
+  } else {
+    socket.on('addScoreToVisitor', points => {
+      currentScore += points
+      score.current.innerText =
+        `${currentScore}`.length > 1 ? currentScore : `0${currentScore}`
+    })
+  }
+
+  useEffect(() => {
+    score.current.innerText =
+      `${currentScore}`.length > 1 ? currentScore : `0${currentScore}`
+  })
+
   return (
     <TeamPaper
       variant="outlined"
@@ -89,9 +110,8 @@ const Team = props => {
               color: team.color,
               textAlign: 'center',
             }}
-          >
-            23
-          </Typography>
+            ref={score}
+          />
         </Grid>
       </Grid>
     </TeamPaper>
