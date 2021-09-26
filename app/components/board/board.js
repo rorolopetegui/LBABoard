@@ -8,7 +8,7 @@ import logoDynamo from '../../images/dynamo.png'
 import logoPanteras from '../../images/panterasbbc.png'
 import logoPeorEsCasarse from '../../images/peorescasarse.png'
 import logoStoners from '../../images/stoners.png'
-import { io } from '../common/socket.io'
+import useStore from '../../store'
 
 const lbaTeams =
   // Here should load teams who will play
@@ -71,13 +71,12 @@ const matchInitialState = {
   quarter: '1st',
 }
 
-const socket = io('http://192.168.0.110:5000/')
-
 const Board = () => {
   const [boardState, setBoardState] = useState(matchInitialState)
   const [teams, setTeams] = useState([])
+  const store = useStore(state => state)
 
-  socket.on('setMatch', selectedTeams => {
+  store.socket.on('setMatch', selectedTeams => {
     console.log('setMatch', selectedTeams)
     const myMatch = []
     lbaTeams.forEach(team => {
@@ -122,14 +121,14 @@ const Board = () => {
             key={team.id}
             team={team}
             isLocal={team.isLocal}
-            socket={socket}
+            socket={store.socket}
           />
         ))}
       <Quarter
         matchTime={boardState.match}
         positionCloak={boardState.positionCloak}
         quarter={boardState.quarter}
-        socket={socket}
+        socket={store.socket}
       />
     </Box>
   )

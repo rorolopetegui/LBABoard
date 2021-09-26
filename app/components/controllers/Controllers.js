@@ -15,7 +15,7 @@ import {
   MenuItem,
 } from '@mui/material'
 import { AddCircleRounded, RemoveCircleRounded } from '@mui/icons-material'
-import { io } from '../common/socket.io'
+import useStore from '../../store'
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -40,37 +40,37 @@ const teams = [
   'Stoners',
 ]
 
-const socket = io('http://192.168.0.110:5000')
-
 const Controllers = () => {
   const [teamLocal, setTeamLocal] = useState('Are-Pora')
   const [teamVisitor, setTeamVisitor] = useState('Carolino')
+  const store = useStore(state => state)
+
   const actionTimers = () => {
-    socket.emit('actionTime')
+    store.socket.emit('actionTime')
   }
   const actionPosition = () => {
-    socket.emit('actionPosition')
+    store.socket.emit('actionPosition')
   }
   const addLocalScore = points => {
-    socket.emit('addScoreLocal', points)
+    store.socket.emit('addScoreLocal', points)
   }
   const addScoreVisitor = points => {
-    socket.emit('addScoreVisitor', points)
+    store.socket.emit('addScoreVisitor', points)
   }
   const addPersonalLocal = points => {
-    socket.emit('addPersonalLocal', points)
+    store.socket.emit('addPersonalLocal', points)
   }
   const addPersonalVisitor = points => {
-    socket.emit('addPersonalVisitor', points)
+    store.socket.emit('addPersonalVisitor', points)
   }
   const advanceQuarter = () => {
-    socket.emit('advanceQuarter')
+    store.socket.emit('advanceQuarter')
   }
   const setPositionTime = time => {
-    socket.emit('setPositionTime', time)
+    store.socket.emit('setPositionTime', time)
   }
   const setTeams = () => {
-    socket.emit('setTeams', [teamLocal, teamVisitor])
+    store.socket.emit('setTeams', [teamLocal, teamVisitor])
   }
 
   return (
