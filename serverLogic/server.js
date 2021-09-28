@@ -12,15 +12,38 @@ const io = new Server(server, {
 })
 app.use(cors())
 
+app.get('/teams', (req, res) => {
+  // TODO HAY QUE MEJORAR ESTO, PARA QUE SE CARGUEN LAS IMAGENES TAMBIEN
+  res.send(lbaTeams)
+})
+
+const lbaTeams = [
+  'Are-Pora',
+  'Carolino',
+  'Dynamo BBC',
+  'Panteras BBC',
+  'Peor Es Casarse',
+  'Stoners',
+]
+
+let teamLocal = lbaTeams[0]
+let teamVisitor = lbaTeams[1]
+let scoreLocal = 0
+let scoreVisitor = 0
+
 io.on('connection', socket => {
   console.log('Got connection')
+  socket.emit('match', [teamLocal, teamVisitor])
+
   socket.on('addScoreLocal', points => {
     console.log('addScoreToLocal', points)
-    io.emit('addScoreToLocal', points)
+    scoreLocal += points
+    io.emit('addScoreToLocal', scoreLocal)
   })
   socket.on('addScoreVisitor', points => {
     console.log('addScoreToVisitor', points)
-    io.emit('addScoreToVisitor', points)
+    scoreVisitor += points
+    io.emit('addScoreToVisitor', scoreVisitor)
   })
   socket.on('actionPosition', () => {
     console.log('actionPosition')
@@ -48,6 +71,10 @@ io.on('connection', socket => {
   })
   socket.on('setTeams', teams => {
     console.log('setTeams', teams)
+    teamLocal = teams[0]
+    teamVisitor = teams[1]
+    scoreLocal = 0
+    scoreVisitor = 0
     io.emit('setMatch', teams)
   })
 })

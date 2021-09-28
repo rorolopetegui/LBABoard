@@ -66,18 +66,46 @@ const lbaTeams =
 const matchInitialState = {
   scoreLocal: 0,
   scoreVisitor: 0,
-  positionCloak: 24,
-  match: 10,
+  positionCloak: 24.9 * 1000,
+  match: 10.009 * 60000,
   quarter: '1st',
 }
 
 const Board = () => {
-  const [boardState, setBoardState] = useState(matchInitialState)
   const [teams, setTeams] = useState([])
   const store = useStore(state => state)
 
   store.socket.on('setMatch', selectedTeams => {
     console.log('setMatch', selectedTeams)
+    const myMatch = []
+    lbaTeams.forEach(team => {
+      if (selectedTeams.includes(team.name)) {
+        if (selectedTeams.indexOf(team.name) === 0) {
+          myMatch[0] = {
+            id: team.id,
+            logo: team.logo,
+            name: team.name,
+            colorVisitor: team.colorVisitor,
+            colorLocal: team.colorLocal,
+            isLocal: true,
+          }
+        } else {
+          myMatch[1] = {
+            id: team.id,
+            logo: team.logo,
+            name: team.name,
+            colorVisitor: team.colorVisitor,
+            colorLocal: team.colorLocal,
+            isLocal: false,
+          }
+        }
+      }
+    })
+    console.log('myMatch', myMatch)
+    setTeams(myMatch)
+  })
+
+  store.socket.on('match', selectedTeams => {
     const myMatch = []
     lbaTeams.forEach(team => {
       if (selectedTeams.includes(team.name)) {
@@ -125,9 +153,9 @@ const Board = () => {
           />
         ))}
       <Quarter
-        matchTime={boardState.match}
-        positionCloak={boardState.positionCloak}
-        quarter={boardState.quarter}
+        matchTime={matchInitialState.match}
+        positionCloak={matchInitialState.positionCloak}
+        quarter={matchInitialState.quarter}
         socket={store.socket}
       />
     </Box>

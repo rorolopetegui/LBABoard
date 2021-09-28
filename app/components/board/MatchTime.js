@@ -8,17 +8,18 @@ const Item = styled(Paper)(({ theme }) => ({
   textAlign: 'center',
 }))
 
-const parseSeconds = time => {
+const parseMinutesAndSeconds = time => {
   const miliseconds = `${(time / 10) % 100}`.slice(-2)[0]
   const seconds = `0${Math.floor((time / 1000) % 60)}`
-  if (time < 5 * 1000) return `${seconds.slice(-1)}.${miliseconds}`
-  return `:${seconds.slice(-2)}`
+  const minutes = `0${Math.floor((time / 60000) % 60)}`
+
+  return `${minutes.slice(-2)}:${seconds.slice(-2)}`
 }
 
-const TimePosition = props => {
-  const [time, setTime] = useState(props.initialTime)
+const MatchTime = props => {
+  const { socket, initialTime } = props
+  const [time, setTime] = useState(initialTime)
   const [timerOn, setTimerOn] = useState(false)
-  const { socket } = props
 
   useEffect(() => {
     let interval = null
@@ -40,34 +41,29 @@ const TimePosition = props => {
     }
   }, [time])
 
-  socket.on('actionPositionCloak', () => {
+  socket.on('actionBoard', () => {
     setTimerOn(!timerOn)
   })
 
-  socket.on('setTimePosition', newTime => {
-    setTimerOn(true)
-    setTime(newTime)
-  })
-
   socket.on('advanceQuarterBoard', () => {
-    setTime(props.initialTime)
+    setTime(initialTime)
     setTimerOn(false)
   })
 
   return (
-    <Grid item xs={2}>
-      <Item variant="outlined" square>
-        <Typography
-          variant="h6"
-          style={{
-            background: 'radial-gradient(#7f0000 0%, transparent 80%)',
-          }}
-        >
-          {parseSeconds(time)}
-        </Typography>
+    <Grid item xs={7}>
+      <Item
+        variant="outlined"
+        square
+        style={{
+          borderLeft: '0.05rem solid grey',
+          borderRight: '0.05rem solid grey',
+        }}
+      >
+        <Typography variant="h6">{parseMinutesAndSeconds(time)}</Typography>
       </Item>
     </Grid>
   )
 }
 
-export default TimePosition
+export default MatchTime

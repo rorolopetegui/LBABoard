@@ -43,12 +43,16 @@ const teams = [
 const Controllers = () => {
   const [teamLocal, setTeamLocal] = useState('Are-Pora')
   const [teamVisitor, setTeamVisitor] = useState('Carolino')
+  const [matchTimeOn, setMatchTimeOn] = useState(false)
+  const [positionTimeOn, setPositionTimeOn] = useState(false)
   const store = useStore(state => state)
 
   const actionTimers = () => {
+    setMatchTimeOn(!matchTimeOn)
     store.socket.emit('actionTime')
   }
   const actionPosition = () => {
+    setPositionTimeOn(!positionTimeOn)
     store.socket.emit('actionPosition')
   }
   const addLocalScore = points => {
@@ -64,9 +68,11 @@ const Controllers = () => {
     store.socket.emit('addPersonalVisitor', points)
   }
   const advanceQuarter = () => {
+    setPositionTimeOn(false)
     store.socket.emit('advanceQuarter')
   }
   const setPositionTime = time => {
+    setPositionTimeOn(true)
     store.socket.emit('setPositionTime', time)
   }
   const setTeams = () => {
@@ -176,7 +182,7 @@ const Controllers = () => {
                       variant="outlined"
                       size="small"
                       style={{ marginRight: '1rem' }}
-                      onClick={() => setPositionTime(14)}
+                      onClick={() => setPositionTime(14.9 * 1000)}
                     >
                       14
                     </Button>
@@ -184,7 +190,7 @@ const Controllers = () => {
                       variant="outlined"
                       size="small"
                       style={{ marginRight: '1rem' }}
-                      onClick={() => setPositionTime(24)}
+                      onClick={() => setPositionTime(24.9 * 1000)}
                     >
                       24
                     </Button>
@@ -193,7 +199,7 @@ const Controllers = () => {
                       size="small"
                       onClick={() => actionPosition()}
                     >
-                      P/C
+                      {positionTimeOn ? 'PAUSAR' : 'INICIAR'}
                     </Button>
                   </Grid>
                   <Grid item xs={6}>
@@ -212,7 +218,7 @@ const Controllers = () => {
                       size="small"
                       onClick={() => actionTimers()}
                     >
-                      P/C
+                      {matchTimeOn ? 'PAUSAR' : 'INICIAR'}
                     </Button>
                   </Grid>
                 </Grid>

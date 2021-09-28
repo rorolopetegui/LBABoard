@@ -1,5 +1,6 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { styled, Paper, Grid, Typography } from '@mui/material'
+import Score from './Score'
 
 const TeamPaper = styled(Paper)(() => ({
   maxHeight: '3rem',
@@ -39,51 +40,28 @@ const ImgLogo = ({ img }) => (
 )
 
 const Team = props => {
-  const score = useRef(null)
   const personalOne = useRef(null)
   const personalTwo = useRef(null)
   const personalThree = useRef(null)
   const personalFour = useRef(null)
   const personalFive = useRef(null)
   const { team, isLocal, socket } = props
-  let currentScore = 0
   let currentPersonals = 0
   if (isLocal) {
-    console.log('isLocal')
-    socket.on('addScoreToLocal', points => {
-      console.log('addScoreToLocal', points)
-      currentScore += points
-      score.current.innerText =
-        `${currentScore}`.length > 1 ? currentScore : `0${currentScore}`
-    })
     socket.on('addPersonalToLocal', points => {
-      console.log('addPersonalToLocal', points)
       currentPersonals += points
       if (currentPersonals > 5) currentPersonals = 0
       setCurrentPersonals()
     })
   } else {
-    console.log('!isLocal')
-    socket.on('addScoreToVisitor', points => {
-      console.log('addScoreToVisitor', points)
-      currentScore += points
-      score.current.innerText =
-        `${currentScore}`.length > 1 ? currentScore : `0${currentScore}`
-    })
     socket.on('addPersonalToVisitor', points => {
-      console.log('addPersonalToVisitor', points)
       currentPersonals += points
       if (currentPersonals > 5) currentPersonals = 0
-      score.current.innerText =
-        `${currentScore}`.length > 1 ? currentScore : `0${currentScore}`
       setCurrentPersonals()
     })
   }
 
   useEffect(() => {
-    score.current.innerText =
-      `${currentScore}`.length > 1 ? currentScore : `0${currentScore}`
-    console.log('currentPersonals', currentPersonals)
     setCurrentPersonals()
   })
 
@@ -164,19 +142,7 @@ const Team = props => {
             {team.name}
           </Typography>
         </Grid>
-        <Grid item xs={2}>
-          <Typography
-            variant="h6"
-            style={{
-              marginTop: '2px',
-              marginRight: '2px',
-              backgroundColor: '#fafafa',
-              color: isLocal ? team.colorLocal : team.colorVisitor,
-              textAlign: 'center',
-            }}
-            ref={score}
-          />
-        </Grid>
+        <Score team={team} isLocal={isLocal} socket={socket} />
       </Grid>
     </TeamPaper>
   )
