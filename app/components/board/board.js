@@ -105,12 +105,15 @@ const Board = () => {
     setTeams(myMatch)
   })
 
-  store.socket.on('match', selectedTeams => {
-    const myMatch = []
+  store.socket.on('match', myMatch => {
+    const matchedTeams = []
+    const selectedTeams = []
+    selectedTeams.push(myMatch.teamLocal)
+    selectedTeams.push(myMatch.teamVisitor)
     lbaTeams.forEach(team => {
       if (selectedTeams.includes(team.name)) {
         if (selectedTeams.indexOf(team.name) === 0) {
-          myMatch[0] = {
+          matchedTeams[0] = {
             id: team.id,
             logo: team.logo,
             name: team.name,
@@ -119,7 +122,7 @@ const Board = () => {
             isLocal: true,
           }
         } else {
-          myMatch[1] = {
+          matchedTeams[1] = {
             id: team.id,
             logo: team.logo,
             name: team.name,
@@ -130,8 +133,8 @@ const Board = () => {
         }
       }
     })
-    console.log('myMatch', myMatch)
-    setTeams(myMatch)
+    console.log('matchedTeams', matchedTeams)
+    setTeams(matchedTeams)
   })
 
   return (

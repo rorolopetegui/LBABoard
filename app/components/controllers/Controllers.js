@@ -13,6 +13,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  TextField,
 } from '@mui/material'
 import { AddCircleRounded, RemoveCircleRounded } from '@mui/icons-material'
 import useStore from '../../store'
@@ -31,6 +32,11 @@ const Icon = styled(IconButton)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }))
 
+const InputText = styled(TextField)(({ theme }) => ({
+  width: '6rem',
+  margin: theme.spacing(1),
+}))
+
 const teams = [
   'Are-Pora',
   'Carolino',
@@ -45,39 +51,50 @@ const Controllers = () => {
   const [teamVisitor, setTeamVisitor] = useState('Carolino')
   const [matchTimeOn, setMatchTimeOn] = useState(false)
   const [positionTimeOn, setPositionTimeOn] = useState(false)
-  const store = useStore(state => state)
+  const [timeMatch, setTimeMatch] = useState(1000)
 
+  const store = useStore(state => state)
+  const { socket } = store
   const actionTimers = () => {
     setMatchTimeOn(!matchTimeOn)
-    store.socket.emit('actionTime')
+    socket.emit('actionTime')
   }
   const actionPosition = () => {
     setPositionTimeOn(!positionTimeOn)
-    store.socket.emit('actionPosition')
+    socket.emit('actionPosition')
   }
   const addLocalScore = points => {
-    store.socket.emit('addScoreLocal', points)
+    socket.emit('addScoreLocal', points)
   }
   const addScoreVisitor = points => {
-    store.socket.emit('addScoreVisitor', points)
+    socket.emit('addScoreVisitor', points)
   }
   const addPersonalLocal = points => {
-    store.socket.emit('addPersonalLocal', points)
+    socket.emit('addPersonalLocal', points)
   }
   const addPersonalVisitor = points => {
-    store.socket.emit('addPersonalVisitor', points)
+    socket.emit('addPersonalVisitor', points)
   }
   const advanceQuarter = () => {
     setPositionTimeOn(false)
-    store.socket.emit('advanceQuarter')
+    socket.emit('advanceQuarter')
   }
   const setPositionTime = time => {
     setPositionTimeOn(true)
-    store.socket.emit('setPositionTime', time)
+    socket.emit('setPositionTime', time)
   }
   const setTeams = () => {
-    store.socket.emit('setTeams', [teamLocal, teamVisitor])
+    socket.emit('setTeams', [teamLocal, teamVisitor])
   }
+
+  const setMatchTime = () => {
+    socket.emit('setMatchTime', timeMatch)
+  }
+
+  socket.on('advanceQuarterBoard', () => {
+    setMatchTimeOn(false)
+    setPositionTimeOn(false)
+  })
 
   return (
     <>
@@ -182,7 +199,7 @@ const Controllers = () => {
                       variant="outlined"
                       size="small"
                       style={{ marginRight: '1rem' }}
-                      onClick={() => setPositionTime(14.9 * 1000)}
+                      onClick={() => setPositionTime(14.6 * 1000)}
                     >
                       14
                     </Button>
@@ -190,7 +207,7 @@ const Controllers = () => {
                       variant="outlined"
                       size="small"
                       style={{ marginRight: '1rem' }}
-                      onClick={() => setPositionTime(24.9 * 1000)}
+                      onClick={() => setPositionTime(24.6 * 1000)}
                     >
                       24
                     </Button>
@@ -220,6 +237,22 @@ const Controllers = () => {
                     >
                       {matchTimeOn ? 'PAUSAR' : 'INICIAR'}
                     </Button>
+                    <br />
+                    <InputText
+                      label="Tiempo"
+                      variant="filled"
+                      size="small"
+                      value={timeMatch}
+                      onChange={e => setTimeMatch(e.target.value)}
+                    />
+                    <br />
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={() => setMatchTime()}
+                    >
+                      Aplicar
+                    </Button>
                   </Grid>
                 </Grid>
               </Item>
@@ -234,7 +267,9 @@ const Controllers = () => {
                     onChange={e => setTeamLocal(e.target.value)}
                   >
                     {teams.map((team, index) => (
-                      <MenuItem key={index} value={team}>{team}</MenuItem>
+                      <MenuItem key={index} value={team}>
+                        {team}
+                      </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
@@ -248,7 +283,9 @@ const Controllers = () => {
                     onChange={e => setTeamVisitor(e.target.value)}
                   >
                     {teams.map((team, index) => (
-                      <MenuItem key={index} value={team}>{team}</MenuItem>
+                      <MenuItem key={index} value={team}>
+                        {team}
+                      </MenuItem>
                     ))}
                   </Select>
                 </FormControl>

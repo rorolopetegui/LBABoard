@@ -50,13 +50,13 @@ const Team = props => {
   if (isLocal) {
     socket.on('addPersonalToLocal', points => {
       currentPersonals += points
-      if (currentPersonals > 5) currentPersonals = 0
+      if (currentPersonals > 5 || currentPersonals < 0) currentPersonals = 0
       setCurrentPersonals()
     })
   } else {
     socket.on('addPersonalToVisitor', points => {
       currentPersonals += points
-      if (currentPersonals > 5) currentPersonals = 0
+      if (currentPersonals > 5 || currentPersonals < 0) currentPersonals = 0
       setCurrentPersonals()
     })
   }

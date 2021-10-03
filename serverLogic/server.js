@@ -31,9 +31,17 @@ let teamVisitor = lbaTeams[1]
 let scoreLocal = 0
 let scoreVisitor = 0
 
+const getMatchStats = () => ({
+  teamLocal,
+  teamVisitor,
+  scoreLocal,
+  scoreVisitor,
+})
+console.log('getMatchStats', getMatchStats())
+
 io.on('connection', socket => {
   console.log('Got connection')
-  socket.emit('match', [teamLocal, teamVisitor])
+  socket.emit('match', getMatchStats())
 
   socket.on('addScoreLocal', points => {
     console.log('addScoreToLocal', points)
@@ -68,6 +76,10 @@ io.on('connection', socket => {
   socket.on('setPositionTime', time => {
     console.log('setPositionTime')
     io.emit('setTimePosition', time)
+  })
+  socket.on('setMatchTime', time => {
+    console.log('setMatchTime')
+    io.emit('setTime', time)
   })
   socket.on('setTeams', teams => {
     console.log('setTeams', teams)
