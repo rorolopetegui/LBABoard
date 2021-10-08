@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Box } from '@mui/material'
 import Team from './Team'
 import Quarter from './Quarter'
@@ -63,7 +63,7 @@ const lbaTeams =
     },
   ]
 
-const matchInitialState = {
+let matchInitialState = {
   scoreLocal: 0,
   scoreVisitor: 0,
   positionCloak: 24.9 * 1000,
@@ -74,68 +74,72 @@ const matchInitialState = {
 const Board = () => {
   const [teams, setTeams] = useState([])
   const store = useStore(state => state)
-
-  store.socket.on('setMatch', selectedTeams => {
-    console.log('setMatch', selectedTeams)
-    const myMatch = []
-    lbaTeams.forEach(team => {
-      if (selectedTeams.includes(team.name)) {
-        if (selectedTeams.indexOf(team.name) === 0) {
-          myMatch[0] = {
-            id: team.id,
-            logo: team.logo,
-            name: team.name,
-            colorVisitor: team.colorVisitor,
-            colorLocal: team.colorLocal,
-            isLocal: true,
-          }
-        } else {
-          myMatch[1] = {
-            id: team.id,
-            logo: team.logo,
-            name: team.name,
-            colorVisitor: team.colorVisitor,
-            colorLocal: team.colorLocal,
-            isLocal: false,
-          }
-        }
-      }
-    })
-    console.log('myMatch', myMatch)
-    setTeams(myMatch)
-  })
-
-  store.socket.on('match', myMatch => {
-    const matchedTeams = []
-    const selectedTeams = []
-    selectedTeams.push(myMatch.teamLocal)
-    selectedTeams.push(myMatch.teamVisitor)
-    lbaTeams.forEach(team => {
-      if (selectedTeams.includes(team.name)) {
-        if (selectedTeams.indexOf(team.name) === 0) {
-          matchedTeams[0] = {
-            id: team.id,
-            logo: team.logo,
-            name: team.name,
-            colorVisitor: team.colorVisitor,
-            colorLocal: team.colorLocal,
-            isLocal: true,
-          }
-        } else {
-          matchedTeams[1] = {
-            id: team.id,
-            logo: team.logo,
-            name: team.name,
-            colorVisitor: team.colorVisitor,
-            colorLocal: team.colorLocal,
-            isLocal: false,
+  useEffect(() => {
+    store.socket.on('setMatch', selectedTeams => {
+      console.log('setMatch', selectedTeams)
+      const myMatch = []
+      lbaTeams.forEach(team => {
+        if (selectedTeams.includes(team.name)) {
+          if (selectedTeams.indexOf(team.name) === 0) {
+            myMatch[0] = {
+              id: team.id,
+              logo: team.logo,
+              name: team.name,
+              colorVisitor: team.colorVisitor,
+              colorLocal: team.colorLocal,
+              isLocal: true,
+            }
+          } else {
+            myMatch[1] = {
+              id: team.id,
+              logo: team.logo,
+              name: team.name,
+              colorVisitor: team.colorVisitor,
+              colorLocal: team.colorLocal,
+              isLocal: false,
+            }
           }
         }
-      }
+      })
+      console.log('myMatch', myMatch)
+      setTeams(myMatch)
     })
-    console.log('matchedTeams', matchedTeams)
-    setTeams(matchedTeams)
-  })
+  
+    store.socket.on('match', myMatch => {
+      const matchedTeams = []
+      const selectedTeams = []
+      selectedTeams.push(myMatch.teamLocal)
+      selectedTeams.push(myMatch.teamVisitor)
+      lbaTeams.forEach(team => {
+        if (selectedTeams.includes(team.name)) {
+          if (selectedTeams.indexOf(team.name) === 0) {
+            matchedTeams[0] = {
+              id: team.id,
+              logo: team.logo,
+              name: team.name,
+              colorVisitor: team.colorVisitor,
+              colorLocal: team.colorLocal,
+              isLocal: true,
+            }
+          } else {
+            matchedTeams[1] = {
+              id: team.id,
+              logo: team.logo,
+              name: team.name,
+              colorVisitor: team.colorVisitor,
+              colorLocal: team.colorLocal,
+              isLocal: false,
+            }
+          }
+        }
+      })
+      matchInitialState = {
+        myMatch,
+        ...matchInitialState,
+      }
+      setTeams(matchedTeams)
+    })
+  }, [])
 
   return (
     <Box

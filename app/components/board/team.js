@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { styled, Paper, Grid, Typography } from '@mui/material'
 import Score from './Score'
 
@@ -47,23 +47,23 @@ const Team = props => {
   const personalFive = useRef(null)
   const { team, isLocal, socket } = props
   let currentPersonals = 0
-  if (isLocal) {
-    socket.on('addPersonalToLocal', points => {
-      currentPersonals += points
-      if (currentPersonals > 5 || currentPersonals < 0) currentPersonals = 0
-      setCurrentPersonals()
-    })
-  } else {
-    socket.on('addPersonalToVisitor', points => {
-      currentPersonals += points
-      if (currentPersonals > 5 || currentPersonals < 0) currentPersonals = 0
-      setCurrentPersonals()
-    })
-  }
 
   useEffect(() => {
+    if (isLocal) {
+      socket.on('addPersonalToLocal', points => {
+        currentPersonals += points
+        if (currentPersonals > 5 || currentPersonals < 0) currentPersonals = 0
+        setCurrentPersonals()
+      })
+    } else {
+      socket.on('addPersonalToVisitor', points => {
+        currentPersonals += points
+        if (currentPersonals > 5 || currentPersonals < 0) currentPersonals = 0
+        setCurrentPersonals()
+      })
+    }
     setCurrentPersonals()
-  })
+  }, [])
 
   const setCurrentPersonals = () => {
     personalOne.current.style.display = currentPersonals >= 1 ? 'block' : 'none'

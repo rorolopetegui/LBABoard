@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { styled, Paper, Grid, Typography } from '@mui/material'
 import TimePosition from './TimePosition'
 import MatchTime from './MatchTime'
@@ -20,14 +20,14 @@ const quarters = ['1st', '2nd', '3rd', '4th']
 
 const Quarter = props => {
   const [quarter, setQuarter] = useState(0)
-  const { socket } = props
+  const { socket, matchTime, positionCloak } = props
 
-  socket.on('advanceQuarterBoard', () => {
-    let newQuarter = quarter + 1
-    if (newQuarter >= quarters.length) newQuarter = 0
-
-    setQuarter(newQuarter)
-  })
+  useEffect(() => {
+    socket.on('advanceQuarterBoard', quarter => {
+      console.log('advanceQuarterBoard')
+      setQuarter(quarter)
+    })
+  }, [])
 
   return (
     <Score variant="outlined" square>
@@ -37,8 +37,8 @@ const Quarter = props => {
             <Typography variant="h6">{quarters[quarter]}</Typography>
           </Item>
         </Grid>
-        <MatchTime socket={socket} initialTime={props.matchTime} />
-        <TimePosition socket={socket} initialTime={props.positionCloak} />
+        <MatchTime socket={socket} initialTime={matchTime} />
+        <TimePosition socket={socket} initialTime={positionCloak} />
       </Grid>
     </Score>
   )

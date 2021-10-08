@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   CssBaseline,
   Container,
@@ -55,6 +55,23 @@ const Controllers = () => {
 
   const store = useStore(state => state)
   const { socket } = store
+
+  useEffect(() => {
+    socket.on('advanceQuarterBoard', () => {
+      setMatchTimeOn(false)
+      setPositionTimeOn(false)
+    })
+
+    socket.on('actionPositionCloak', state => {
+      console.log('actionPositionCloak', state)
+      setPositionTimeOn(state)
+    })
+
+    socket.on('actionBoard', state => {
+      setMatchTimeOn(state)
+    })
+  }, [])
+
   const actionTimers = () => {
     setMatchTimeOn(!matchTimeOn)
     socket.emit('actionTime')
@@ -90,11 +107,6 @@ const Controllers = () => {
   const setMatchTime = () => {
     socket.emit('setMatchTime', timeMatch)
   }
-
-  socket.on('advanceQuarterBoard', () => {
-    setMatchTimeOn(false)
-    setPositionTimeOn(false)
-  })
 
   return (
     <>

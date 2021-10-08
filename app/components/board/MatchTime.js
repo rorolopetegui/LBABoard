@@ -12,13 +12,14 @@ const parseMinutesAndSeconds = time => {
   const miliseconds = `${(time / 10) % 100}`.slice(-2)[0]
   const seconds = `0${Math.floor((time / 1000) % 60)}`
   const minutes = `0${Math.floor((time / 60000) % 60)}`
+  if (time <= 0) return `0.0`
   if (time < 10 * 1000) return `${seconds.slice(-1)}.${miliseconds}`
   return `${minutes.slice(-2)}:${seconds.slice(-2)}`
 }
 
 const MatchTime = props => {
-  const { socket, initialTime } = props
-  const [time, setTime] = useState(initialTime)
+  const { socket } = props
+  const [time, setTime] = useState(0)
   const [timerOn, setTimerOn] = useState(false)
 
   useEffect(() => {
@@ -41,19 +42,22 @@ const MatchTime = props => {
     }
   }, [time])
 
-  socket.on('actionBoard', () => {
-    setTimerOn(!timerOn)
-  })
+  useEffect(() => {
+    socket.on('actionBoard', state => {
+      setTimerOn(state)
+    })
 
-  socket.on('advanceQuarterBoard', () => {
-    setTime(initialTime)
-    setTimerOn(false)
-  })
+    socket.on('advanceQuarterBoard', () => {
+      console.log('advanceQuarterBoard')
+      setTimerOn(false)
+    })
 
-  socket.on('setTime', newTime => {
-    setTime(newTime * 600)
-    setTimerOn(false)
-  })
+    socket.on('setTime', newTime => {
+      console.log('setTime', newTime)
+      setTime(newTime)
+      setTimerOn(false)
+    })
+  }, [])
 
   return (
     <Grid item xs={7}>

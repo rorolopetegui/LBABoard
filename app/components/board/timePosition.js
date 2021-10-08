@@ -15,9 +15,11 @@ const parseSeconds = time => {
   return `:${seconds.slice(-2)}`
 }
 
+
+
 const TimePosition = props => {
-  const [time, setTime] = useState(props.initialTime)
-  const [timerOn, setTimerOn] = useState(false)
+  const [time, setTime] = useState(0)
+  const [timerOn, setTimerOn] = useState(props.turnedOn || false)
   const { socket } = props
 
   useEffect(() => {
@@ -40,19 +42,26 @@ const TimePosition = props => {
     }
   }, [time])
 
-  socket.on('actionPositionCloak', () => {
-    setTimerOn(!timerOn)
-  })
+  useEffect(() => {
+    socket.on('match', myMatch => {
+      setTime(myMatch.positionTime)
+    })
 
-  socket.on('setTimePosition', newTime => {
-    setTimerOn(true)
-    setTime(newTime)
-  })
+    socket.on('actionPositionCloak', state => {
+      console.log('actionPositionCloak', state)
+      setTimerOn(state)
+    })
 
-  socket.on('advanceQuarterBoard', () => {
-    setTime(props.initialTime)
-    setTimerOn(false)
-  })
+    socket.on('setTimePosition', newTime => {
+      console.log('setTimePosition')
+      setTime(newTime)
+    })
+
+    socket.on('advanceQuarterBoard', () => {
+      console.log('advanceQuarterBoard')
+      setTime(props.initialTime)
+    })
+  }, [])
 
   return (
     <Grid item xs={2}>
