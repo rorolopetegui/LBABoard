@@ -3,8 +3,6 @@ import { io } from './socket.io'
 
 const loadSocketIo = () => io('http://192.168.0.188:5000')
 
-// const socket = io('http://192.168.0.188:5000')
-
 const useStore = create(set => ({
   socket: loadSocketIo(),
 }))

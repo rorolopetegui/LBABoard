@@ -46,22 +46,26 @@ const Team = props => {
   const personalFour = useRef(null)
   const personalFive = useRef(null)
   const { team, isLocal, socket } = props
-  let currentPersonals = 0
+  let currentPersonals = team.personals
 
   useEffect(() => {
     if (isLocal) {
-      socket.on('addPersonalToLocal', points => {
-        currentPersonals += points
-        if (currentPersonals > 5 || currentPersonals < 0) currentPersonals = 0
+      socket.on('setPersonalsLocal', points => {
+        console.log('setPersonalsLocal', points)
+        currentPersonals = points
         setCurrentPersonals()
       })
     } else {
-      socket.on('addPersonalToVisitor', points => {
-        currentPersonals += points
-        if (currentPersonals > 5 || currentPersonals < 0) currentPersonals = 0
+      socket.on('setPersonalsVisitor', points => {
+        console.log('setPersonalsLocal', points)
+        currentPersonals = points
         setCurrentPersonals()
       })
     }
+    socket.on('advanceQuarterBoard', () => {
+      currentPersonals = 0
+      setCurrentPersonals()
+    })
     setCurrentPersonals()
   }, [])
 

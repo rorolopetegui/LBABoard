@@ -15,51 +15,17 @@ const parseSeconds = time => {
   return `:${seconds.slice(-2)}`
 }
 
-
-
 const TimePosition = props => {
   const [time, setTime] = useState(0)
-  const [timerOn, setTimerOn] = useState(props.turnedOn || false)
   const { socket } = props
-
-  useEffect(() => {
-    let interval = null
-
-    if (timerOn) {
-      interval = setInterval(() => {
-        setTime(prevTime => prevTime - 10)
-      }, 10)
-    } else {
-      clearInterval(interval)
-    }
-
-    return () => clearInterval(interval)
-  }, [timerOn])
-
-  useEffect(() => {
-    if (time <= 0) {
-      setTimerOn(false)
-    }
-  }, [time])
 
   useEffect(() => {
     socket.on('match', myMatch => {
       setTime(myMatch.positionTime)
     })
 
-    socket.on('actionPositionCloak', state => {
-      console.log('actionPositionCloak', state)
-      setTimerOn(state)
-    })
-
     socket.on('setTimePosition', newTime => {
-      console.log('setTimePosition')
       setTime(newTime)
-    })
-
-    socket.on('advanceQuarterBoard', () => {
-      console.log('advanceQuarterBoard')
-      setTime(props.initialTime)
     })
   }, [])
 

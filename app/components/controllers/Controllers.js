@@ -70,7 +70,7 @@ const Controllers = () => {
     socket.on('actionBoard', state => {
       setMatchTimeOn(state)
     })
-  }, [])
+  }, [socket])
 
   const actionTimers = () => {
     setMatchTimeOn(!matchTimeOn)
@@ -87,9 +87,11 @@ const Controllers = () => {
     socket.emit('addScoreVisitor', points)
   }
   const addPersonalLocal = points => {
+    console.log('addPersonalLocal', points)
     socket.emit('addPersonalLocal', points)
   }
   const addPersonalVisitor = points => {
+    console.log('addPersonalVisitor', points)
     socket.emit('addPersonalVisitor', points)
   }
   const advanceQuarter = () => {

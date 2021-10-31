@@ -7850,6 +7850,11 @@ neo-async@^2.5.0, neo-async@^2.6.0:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
+network-address@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/network-address/-/network-address-1.1.2.tgz#4aa7bfd43f03f0b81c9702b13d6a858ddb326f3e"
+  integrity sha1-Sqe/1D8D8LgclwKxPWqFjdsybz4=
+
 ngrok@3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/ngrok/-/ngrok-3.1.1.tgz#d4d70e455fff94b56755c2007c41e4daa5e77fa9"

@@ -68,15 +68,15 @@ let matchInitialState = {
   scoreVisitor: 0,
   positionCloak: 24.9 * 1000,
   match: 10.009 * 60000,
-  quarter: '1st',
+  quarter: 0,
 }
 
 const Board = () => {
   const [teams, setTeams] = useState([])
+  const [initialState, setInitialState] = useState(matchInitialState)
   const store = useStore(state => state)
   useEffect(() => {
     store.socket.on('setMatch', selectedTeams => {
-      console.log('setMatch', selectedTeams)
       const myMatch = []
       lbaTeams.forEach(team => {
         if (selectedTeams.includes(team.name)) {
@@ -88,6 +88,8 @@ const Board = () => {
               colorVisitor: team.colorVisitor,
               colorLocal: team.colorLocal,
               isLocal: true,
+              score: 0,
+              personals: 0,
             }
           } else {
             myMatch[1] = {
@@ -97,6 +99,8 @@ const Board = () => {
               colorVisitor: team.colorVisitor,
               colorLocal: team.colorLocal,
               isLocal: false,
+              score: 0,
+              personals: 0,
             }
           }
         }
@@ -104,8 +108,9 @@ const Board = () => {
       console.log('myMatch', myMatch)
       setTeams(myMatch)
     })
-  
+
     store.socket.on('match', myMatch => {
+      console.log('match', myMatch)
       const matchedTeams = []
       const selectedTeams = []
       selectedTeams.push(myMatch.teamLocal)
@@ -120,6 +125,8 @@ const Board = () => {
               colorVisitor: team.colorVisitor,
               colorLocal: team.colorLocal,
               isLocal: true,
+              score: myMatch.scoreLocal,
+              personals: myMatch.personalsLocal,
             }
           } else {
             matchedTeams[1] = {
@@ -129,14 +136,12 @@ const Board = () => {
               colorVisitor: team.colorVisitor,
               colorLocal: team.colorLocal,
               isLocal: false,
+              score: myMatch.scoreVisitor,
+              personals: myMatch.personalsVisitor,
             }
           }
         }
       })
-      matchInitialState = {
-        myMatch,
-        ...matchInitialState,
-      }
       setTeams(matchedTeams)
     })
   }, [])
@@ -160,9 +165,9 @@ const Board = () => {
           />
         ))}
       <Quarter
-        matchTime={matchInitialState.match}
-        positionCloak={matchInitialState.positionCloak}
-        quarter={matchInitialState.quarter}
+        matchTime={initialState.match}
+        positionCloak={initialState.positionCloak}
+        quarter={initialState.quarter}
         socket={store.socket}
       />
     </Box>

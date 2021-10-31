@@ -20,42 +20,13 @@ const parseMinutesAndSeconds = time => {
 const MatchTime = props => {
   const { socket } = props
   const [time, setTime] = useState(0)
-  const [timerOn, setTimerOn] = useState(false)
 
   useEffect(() => {
-    let interval = null
-
-    if (timerOn) {
-      interval = setInterval(() => {
-        setTime(prevTime => prevTime - 10)
-      }, 10)
-    } else {
-      clearInterval(interval)
-    }
-
-    return () => clearInterval(interval)
-  }, [timerOn])
-
-  useEffect(() => {
-    if (time <= 0) {
-      setTimerOn(false)
-    }
-  }, [time])
-
-  useEffect(() => {
-    socket.on('actionBoard', state => {
-      setTimerOn(state)
-    })
-
-    socket.on('advanceQuarterBoard', () => {
-      console.log('advanceQuarterBoard')
-      setTimerOn(false)
-    })
-
     socket.on('setTime', newTime => {
-      console.log('setTime', newTime)
       setTime(newTime)
-      setTimerOn(false)
+    })
+    socket.on('match', myMatch => {
+      setTime(myMatch.matchTime)
     })
   }, [])
 

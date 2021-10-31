@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { Grid, Typography } from '@mui/material'
 
 const Score = props => {
-  const [score, setScore] = useState(0)
   const { isLocal, team, socket } = props
+  const [score, setScore] = useState(team.score)
   const getScore = () => (`${score}`.length > 1 ? score : `0${score}`)
 
   useEffect(() => {
