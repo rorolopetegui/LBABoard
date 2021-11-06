@@ -173,9 +173,13 @@ io.on('connection', socket => {
     activatePositionTime()
   })
   socket.on('setMatchTime', time => {
-    console.log('setMatchTime')
-    io.emit('setTime', time * 600)
+    clearInterval(intervalPosition)
     matchTimer = false
+    positionTimer = false
+    positionTime = initialPositionTime
+    matchTime = time
+    io.emit('setTimePosition', positionTime)
+    io.emit('setTime', matchTime)
     io.emit('actionBoard', matchTimer)
   })
   socket.on('setTeams', teams => {

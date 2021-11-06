@@ -1,3 +1,4 @@
+/* eslint-disable radix */
 import React, { useState, useEffect } from 'react'
 import {
   CssBaseline,
@@ -30,6 +31,7 @@ const Icon = styled(IconButton)(({ theme }) => ({
   padding: theme.spacing(3),
   textAlign: 'center',
   color: theme.palette.text.secondary,
+  transform: 'scale(1.5)',
 }))
 
 const InputText = styled(TextField)(({ theme }) => ({
@@ -107,7 +109,19 @@ const Controllers = () => {
   }
 
   const setMatchTime = () => {
-    socket.emit('setMatchTime', timeMatch)
+    let completedTime = `${timeMatch}`
+    if (completedTime.length < 4) {
+      const cerosToComplete = 4 - completedTime.length
+      for (let i = 0; i < cerosToComplete; i++) {
+        completedTime = `0${completedTime}`
+      }
+    }
+
+    const minutes = parseInt(completedTime.slice(0, 2)) * 60000
+    const seconds = (parseInt(completedTime.slice(-2)) + 0.5) * 1000
+
+    completedTime = minutes + seconds
+    socket.emit('setMatchTime', completedTime)
   }
 
   return (
@@ -123,11 +137,7 @@ const Controllers = () => {
                   <Grid item xs={12}>
                     <Typography variant="h8">Puntos</Typography>
                     <br />
-                    <Icon
-                      aria-label="Rest"
-                      size="large"
-                      onClick={() => addLocalScore(-1)}
-                    >
+                    <Icon aria-label="Rest" onClick={() => addLocalScore(-1)}>
                       <RemoveCircleRounded />
                     </Icon>
                     <Icon
@@ -257,6 +267,7 @@ const Controllers = () => {
                       variant="filled"
                       size="small"
                       value={timeMatch}
+                      inputProps={{ maxLength: 4 }}
                       onChange={e => setTimeMatch(e.target.value)}
                     />
                     <br />

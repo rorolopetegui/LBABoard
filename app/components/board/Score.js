@@ -8,8 +8,10 @@ const Item = styled(Paper)(({ theme }) => ({
   marginTop: '2px',
   minHeight: '2.5em',
 }))
-let timeoutAnimation = null
-let timeoutWaitAnimation = null
+let timeoutLocalAnimation = null
+let timeoutLocalWaitAnimation = null
+let timeoutVisitorAnimation = null
+let timeoutVisitorWaitAnimation = null
 const Score = props => {
   const { isLocal, team, socket } = props
   const [score, setScore] = useState(team.score)
@@ -20,11 +22,11 @@ const Score = props => {
     if (isLocal) {
       socket.on('addScoreToLocal', points => {
         setAnimation(true)
-        clearTimeout(timeoutAnimation)
-        clearTimeout(timeoutWaitAnimation)
-        timeoutAnimation = setTimeout(() => {
+        clearTimeout(timeoutLocalAnimation)
+        clearTimeout(timeoutLocalWaitAnimation)
+        timeoutLocalAnimation = setTimeout(() => {
           setAnimation(false)
-          timeoutWaitAnimation = setTimeout(() => {
+          timeoutLocalWaitAnimation = setTimeout(() => {
             setAnimation(true)
             setScore(points)
           }, 250)
@@ -33,11 +35,11 @@ const Score = props => {
     } else {
       socket.on('addScoreToVisitor', points => {
         setAnimation(true)
-        clearTimeout(timeoutAnimation)
-        clearTimeout(timeoutWaitAnimation)
-        timeoutAnimation = setTimeout(() => {
+        clearTimeout(timeoutVisitorAnimation)
+        clearTimeout(timeoutVisitorWaitAnimation)
+        timeoutVisitorAnimation = setTimeout(() => {
           setAnimation(false)
-          timeoutWaitAnimation = setTimeout(() => {
+          timeoutVisitorWaitAnimation = setTimeout(() => {
             setAnimation(true)
             setScore(points)
           }, 250)
