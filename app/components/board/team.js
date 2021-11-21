@@ -1,5 +1,12 @@
 import React, { useEffect, useRef } from 'react'
-import { styled, Paper, Grid, Typography } from '@mui/material'
+import {
+  styled,
+  Paper,
+  Grid,
+  Typography,
+  createTheme,
+  ThemeProvider,
+} from '@mui/material'
 import Score from './Score'
 
 const TeamPaper = styled(Paper)(() => ({
@@ -39,13 +46,23 @@ const ImgLogo = ({ img }) => (
   />
 )
 
+const normalTheme = createTheme({
+  team: {},
+})
+
+const secondaryTheme = createTheme({
+  team: {},
+})
+
+const themes = [normalTheme, secondaryTheme]
+
 const Team = props => {
   const personalOne = useRef(null)
   const personalTwo = useRef(null)
   const personalThree = useRef(null)
   const personalFour = useRef(null)
   const personalFive = useRef(null)
-  const { team, isLocal, socket } = props
+  const { team, isLocal, socket, theme } = props
   let currentPersonals = team.personals
 
   useEffect(() => {
@@ -81,74 +98,76 @@ const Team = props => {
   }
 
   return (
-    <TeamPaper
-      variant="outlined"
-      square
-      style={{
-        backgroundImage: `radial-gradient(${
-          isLocal ? team.colorLocal : team.colorVisitor
-        } 50%, black 100%)`,
-      }}
-    >
-      <Grid container>
-        <Grid item xs={3} style={{ position: 'relative' }}>
-          <ImgLogo img={team.logo} />
+    <ThemeProvider theme={themes[theme]}>
+      <TeamPaper
+        variant="outlined"
+        square
+        style={{
+          backgroundImage: `radial-gradient(${
+            isLocal ? team.colorLocal : team.colorVisitor
+          } 50%, black 100%)`,
+        }}
+      >
+        <Grid container>
+          <Grid item xs={3} style={{ position: 'relative' }}>
+            <ImgLogo img={team.logo} />
+          </Grid>
+          <Grid item xs={7} style={{ position: 'relative' }}>
+            <Personals>
+              <Grid container spacing={3} style={{ justifyContent: 'center' }}>
+                <Grid
+                  item
+                  xs={1}
+                  style={{ position: 'relative' }}
+                  ref={personalOne}
+                >
+                  <Personal variant="outlined" />
+                </Grid>
+                <Grid
+                  item
+                  xs={1}
+                  style={{ position: 'relative' }}
+                  ref={personalTwo}
+                >
+                  <Personal variant="outlined" />
+                </Grid>
+                <Grid
+                  item
+                  xs={1}
+                  style={{ position: 'relative' }}
+                  ref={personalThree}
+                >
+                  <Personal variant="outlined" />
+                </Grid>
+                <Grid
+                  item
+                  xs={1}
+                  style={{ position: 'relative' }}
+                  ref={personalFour}
+                >
+                  <Personal variant="outlined" />
+                </Grid>
+                <Grid
+                  item
+                  xs={1}
+                  style={{ position: 'relative' }}
+                  ref={personalFive}
+                >
+                  <Personal variant="outlined" />
+                </Grid>
+              </Grid>
+            </Personals>
+            <Typography
+              variant="h6"
+              style={{ color: '#fafafa', textAlign: 'center' }}
+            >
+              {team.name}
+            </Typography>
+          </Grid>
+          <Score team={team} isLocal={isLocal} socket={socket} />
         </Grid>
-        <Grid item xs={7} style={{ position: 'relative' }}>
-          <Personals>
-            <Grid container spacing={3} style={{ justifyContent: 'center' }}>
-              <Grid
-                item
-                xs={1}
-                style={{ position: 'relative' }}
-                ref={personalOne}
-              >
-                <Personal variant="outlined" />
-              </Grid>
-              <Grid
-                item
-                xs={1}
-                style={{ position: 'relative' }}
-                ref={personalTwo}
-              >
-                <Personal variant="outlined" />
-              </Grid>
-              <Grid
-                item
-                xs={1}
-                style={{ position: 'relative' }}
-                ref={personalThree}
-              >
-                <Personal variant="outlined" />
-              </Grid>
-              <Grid
-                item
-                xs={1}
-                style={{ position: 'relative' }}
-                ref={personalFour}
-              >
-                <Personal variant="outlined" />
-              </Grid>
-              <Grid
-                item
-                xs={1}
-                style={{ position: 'relative' }}
-                ref={personalFive}
-              >
-                <Personal variant="outlined" />
-              </Grid>
-            </Grid>
-          </Personals>
-          <Typography
-            variant="h6"
-            style={{ color: '#fafafa', textAlign: 'center' }}
-          >
-            {team.name}
-          </Typography>
-        </Grid>
-        <Score team={team} isLocal={isLocal} socket={socket} />
-      </Grid>
-    </TeamPaper>
+      </TeamPaper>
+    </ThemeProvider>
   )
 }
 

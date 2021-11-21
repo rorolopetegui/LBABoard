@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Box } from '@mui/material'
+import { createTheme, ThemeProvider, styled } from '@mui/material/styles'
 import Team from './Team'
 import Quarter from './Quarter'
 import logoArepora from '../../images/arepora.png'
@@ -63,13 +64,36 @@ const lbaTeams =
     },
   ]
 
-let matchInitialState = {
+const matchInitialState = {
   scoreLocal: 0,
   scoreVisitor: 0,
   positionCloak: 24.9 * 1000,
   match: 10.009 * 60000,
   quarter: 0,
 }
+
+const normalTheme = createTheme({
+  board: {
+    flexGrow: 1,
+    width: '20rem',
+    padding: '0.025rem 0.1rem 0.025rem 0.1rem',
+    backgroundImage: 'radial-gradient(#bdbdbd 50%, black 100%)',
+  },
+})
+
+const secondaryTheme = createTheme({
+  board: {
+    flexGrow: 1,
+    width: '100%',
+    padding: '0.025rem 0.1rem 0.025rem 0.1rem',
+    backgroundImage: 'radial-gradient(#bdbdbd 50%, black 100%)',
+    backgroundColor: 'black',
+  },
+})
+
+const CustomBox = styled(Box)(({ theme }) => theme.board)
+
+const themes = [normalTheme, secondaryTheme]
 
 const Board = () => {
   const [teams, setTeams] = useState([])
@@ -115,6 +139,7 @@ const Board = () => {
       const selectedTeams = []
       selectedTeams.push(myMatch.teamLocal)
       selectedTeams.push(myMatch.teamVisitor)
+      store.setTheme(myMatch.theme)
       lbaTeams.forEach(team => {
         if (selectedTeams.includes(team.name)) {
           if (selectedTeams.indexOf(team.name) === 0) {
@@ -144,33 +169,29 @@ const Board = () => {
       })
       setTeams(matchedTeams)
     })
-  }, [])
+  }, [store])
 
   return (
-    <Box
-      sx={{
-        flexGrow: 1,
-        width: '20rem',
-        padding: '0.025rem 0.1rem 0.025rem 0.1rem',
-        backgroundImage: 'radial-gradient(#bdbdbd 50%, black 100%)',
-      }}
-    >
-      {teams.length > 0 &&
-        teams.map(team => (
-          <Team
-            key={team.id}
-            team={team}
-            isLocal={team.isLocal}
-            socket={store.socket}
-          />
-        ))}
-      <Quarter
-        matchTime={initialState.match}
-        positionCloak={initialState.positionCloak}
-        quarter={initialState.quarter}
-        socket={store.socket}
-      />
-    </Box>
+    <ThemeProvider theme={themes[store.theme]}>
+      <CustomBox>
+        {teams.length > 0 &&
+          teams.map(team => (
+            <Team
+              key={team.id}
+              team={team}
+              isLocal={team.isLocal}
+              socket={store.socket}
+              theme={store.theme}
+            />
+          ))}
+        {/* <Quarter
+          matchTime={initialState.match}
+          positionCloak={initialState.positionCloak}
+          quarter={initialState.quarter}
+          socket={store.socket}
+        /> */}
+      </CustomBox>
+    </ThemeProvider>
   )
 }
 

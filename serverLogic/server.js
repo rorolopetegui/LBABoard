@@ -41,6 +41,8 @@ let positionTimer = false
 let positionTime = initialPositionTime
 let matchTime = initialMatchTime
 let quarter = 0
+let theme = 1
+const MAX_THEME = 1
 
 const getMatchStats = () => ({
   teamLocal,
@@ -54,6 +56,7 @@ const getMatchStats = () => ({
   positionTime,
   matchTime,
   quarter,
+  theme,
 })
 console.log('getMatchStats', getMatchStats())
 
@@ -191,6 +194,11 @@ io.on('connection', socket => {
     io.emit('setMatch', teams)
     matchTimer = false
     io.emit('actionBoard', matchTimer)
+  })
+  socket.on('setNewTheme', themeNumber => {
+    console.log('setNewTheme', themeNumber)
+    theme = themeNumber <= MAX_THEME ? themeNumber : theme
+    io.emit('setTheme', theme)
   })
 })
 
