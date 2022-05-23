@@ -8,6 +8,10 @@ import logoDynamo from '../../images/dynamo.png'
 import logoPanteras from '../../images/panterasbbc.png'
 import logoPeorEsCasarse from '../../images/peorescasarse.png'
 import logoStoners from '../../images/stoners.png'
+import logoPiriapolis from '../../images/piriapolis.png'
+import logoTatu from '../../images/tatu.png'
+import logoUnion from '../../images/union.png'
+import logoRequeche from '../../images/requeche.png'
 import useStore from '../../store'
 
 const lbaTeams =
@@ -57,6 +61,54 @@ const lbaTeams =
       id: 5,
       logo: logoStoners,
       name: 'Stoners',
+      colorVisitor: 'rgb(0 0 0)',
+      colorLocal: 'rgb(0 0 0)',
+      isLocal: false,
+    },
+    {
+      id: 6,
+      logo: logoTatu,
+      name: 'Tatu',
+      colorVisitor: 'rgb(0 0 0)',
+      colorLocal: 'rgb(0 0 0)',
+      isLocal: false,
+    },
+    {
+      id: 7,
+      logo: logoPiriapolis,
+      name: 'Piriapolis',
+      colorVisitor: 'rgb(0 0 0)',
+      colorLocal: 'rgb(0 0 0)',
+      isLocal: false,
+    },
+    {
+      id: 8,
+      logo: logoPiriapolis,
+      name: 'Piriapolis',
+      colorVisitor: 'rgb(0 0 0)',
+      colorLocal: 'rgb(0 0 0)',
+      isLocal: false,
+    },
+    {
+      id: 9,
+      logo: logoPiriapolis,
+      name: 'Piriapolis',
+      colorVisitor: 'rgb(0 0 0)',
+      colorLocal: 'rgb(0 0 0)',
+      isLocal: false,
+    },
+    {
+      id: 10,
+      logo: logoUnion,
+      name: 'Union',
+      colorVisitor: 'rgb(0 0 0)',
+      colorLocal: 'rgb(0 0 0)',
+      isLocal: false,
+    },
+    {
+      id: 10,
+      logo: logoRequeche,
+      name: 'Requeche',
       colorVisitor: 'rgb(0 0 0)',
       colorLocal: 'rgb(0 0 0)',
       isLocal: false,

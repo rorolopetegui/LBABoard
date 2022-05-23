@@ -24,6 +24,10 @@ const lbaTeams = [
   'Panteras BBC',
   'Peor Es Casarse',
   'Stoners',
+  'Tatu',
+  'Piriapolis',
+  'Union',
+  'Requeche',
 ]
 
 const initialPositionTime = 24.4 * 1000

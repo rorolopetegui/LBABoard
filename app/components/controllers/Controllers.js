@@ -46,6 +46,10 @@ const teams = [
   'Panteras BBC',
   'Peor Es Casarse',
   'Stoners',
+  'Tatu',
+  'Piriapolis',
+  'Union',
+  'Requeche',
 ]
 
 const Controllers = () => {
