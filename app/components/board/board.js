@@ -115,7 +115,7 @@ const lbaTeams =
     },
   ]
 
-let matchInitialState = {
+const matchInitialState = {
   scoreLocal: 0,
   scoreVisitor: 0,
   positionCloak: 24.9 * 1000,
@@ -196,7 +196,7 @@ const Board = () => {
       })
       setTeams(matchedTeams)
     })
-  }, [])
+  }, [store.socket])
 
   return (
     <Box
