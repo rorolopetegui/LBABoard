@@ -1,24 +1,24 @@
-Object.defineProperty(exports, '__esModule', {
-  value: true,
-})
-exports.default = void 0
+"use strict";
 
-const _zustand = _interopRequireDefault(require('zustand'))
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = void 0;
 
-const _socket = require('./socket.io')
+var _zustand = _interopRequireDefault(require("zustand"));
 
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj }
-}
+var _socket = require("./socket.io");
 
-const loadSocketIo = function loadSocketIo() {
-  return (0, _socket.io)('http://192.168.43.32:5000')
-}
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-const useStore = (0, _zustand.default)(function(set) {
+var loadSocketIo = function loadSocketIo() {
+  return (0, _socket.io)('http://192.168.0.188:5000');
+};
+
+var useStore = (0, _zustand["default"])(function (set) {
   return {
-    socket: loadSocketIo(),
-  }
-})
-const _default = useStore
-exports.default = _default
+    socket: loadSocketIo()
+  };
+});
+var _default = useStore;
+exports["default"] = _default;

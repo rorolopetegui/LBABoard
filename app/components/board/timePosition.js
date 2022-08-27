@@ -11,7 +11,11 @@ const Item = styled(Paper)(({ theme }) => ({
 const parseSeconds = time => {
   const miliseconds = `${(time / 10) % 100}`.slice(-2)[0]
   const seconds = `0${Math.floor((time / 1000) % 60)}`
-  if (time < 5 * 1000) return `${seconds.slice(-1)}.${miliseconds}`
+  if (time < 5 * 1000) {
+    const test = `${seconds.slice(-1)}.${miliseconds}`
+    console.log('test', test)
+    return test
+  }
   return `:${seconds.slice(-2)}`
 }
 

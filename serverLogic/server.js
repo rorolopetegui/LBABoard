@@ -68,10 +68,11 @@ const activateMatchTime = () => {
   if (matchTimer && matchTime > 0) {
     clearInterval(intervalMatch)
     intervalMatch = setTimeout(() => {
-      matchTime -= 100
+      matchTime -= 110
       io.emit('setTime', matchTime)
       if (matchTime <= 0) {
         io.emit('actionBoard', false)
+        io.emit('setTime', 0)
         clearInterval(intervalMatch)
       } else if (matchTimer) {
         activateMatchTime()
@@ -95,10 +96,11 @@ const activatePositionTime = () => {
     io.emit('actionBoard', true)
     activateMatchTime()
     intervalPosition = setTimeout(() => {
-      positionTime -= 100
+      positionTime -= 110
       io.emit('setTimePosition', positionTime)
       if (positionTime <= 0) {
         io.emit('actionPositionCloak', false)
+        io.emit('setTimePosition', 0)
         clearInterval(intervalPosition)
       } else if (positionTimer) {
         activatePositionTime()
